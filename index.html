@@ -349,7 +349,7 @@ body {
 
   <div class="page-header">
     <h1>Panel de Control · Tarjetas &amp; Recargas</h1>
-    <p>Resumen Ejecutivo</p>
+    <p>Resumen ejecutivo</p>
   </div>
 
   <!-- Status Banner -->
@@ -368,7 +368,7 @@ body {
       <div class="kpi-info">
         <div class="kpi-label">Tarjetas Entregadas</div>
         <div class="kpi-value" id="kpiCards">—</div>
-        <span class="kpi-badge">Colocadas·Activadas</span>
+        <span class="kpi-badge">Activadas</span>
       </div>
     </div>
 
@@ -398,7 +398,20 @@ body {
       <div class="kpi-info">
         <div class="kpi-label">Monto Total Recargas</div>
         <div class="kpi-value money" id="kpiMonto">—</div>
-        <span class="kpi-badge">Registro en MVRTs</span>
+        <span class="kpi-badge">Monetario Total</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#f0ebff;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 20V10M12 20V4M6 20v-6"/>
+        </svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label">Monto Recarga</div>
+        <div class="kpi-value money" id="kpiModa">—</div>
+        <span class="kpi-badge" id="kpiModaBadge" style="background:#f0ebff;color:#7c3aed;">Valor más frecuente</span>
       </div>
     </div>
 
@@ -439,14 +452,14 @@ body {
 
   </section>
 
-  <div class="footer">CardFlow Analytics · Powered by STG &amp; BDA</div>
+  <div class="footer">CardFlow Analytics · Powered by STG - BDA</div>
 </main>
 
 <script>
 /* ════════════════════════════════════════════════════════════
    ▶  CONFIGURACIÓN  ◀  — EDITAR SOLO ESTA SECCIÓN
 ════════════════════════════════════════════════════════════ */
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxviT7UjR7rUHFRv9anPBLWBQecnV_fLgw3os9ZgCP_MGCZnVa7ls03yRtGsYSDcjY69g/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsaLsD1NQzL-uoNL-4Sgio0nsabvTHvJYLOH5zw6WMeHrNW3LK-KzMxNghlFEeehllZQ/exec";
 /* 
   Reemplaza "TU_URL_DE_APPS_SCRIPT_AQUÍ" con la URL que obtienes
   al desplegar el Apps Script como "Web App" (ver instrucciones abajo).
@@ -526,12 +539,14 @@ async function apiFetch(action) {
    RENDER — KPIs
 ════════════════════════════════════════════════════════════ */
 function renderKPIs(d) {
-  const fmt  = n => n?.toLocaleString("es-EC") ?? "—";
-  const fmtM = n => n != null ? "$" + n.toLocaleString("es-EC", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—";
-
   animateNumber("kpiCards",  d?.tarjetasEntregadas ?? 0);
   animateNumber("kpiTrx",    d?.trxRecarga         ?? 0);
   animateNumber("kpiMonto",  d?.montoTotalRecargas  ?? 0, true);
+  animateNumber("kpiModa",   d?.modaMonto           ?? 0, true);
+
+  const freq = d?.modaFrecuencia ?? 0;
+  const badge = document.getElementById("kpiModaBadge");
+  if (badge && freq > 0) badge.textContent = `Repite ${freq} veces`;
 }
 
 function animateNumber(id, target, isMoney = false) {
