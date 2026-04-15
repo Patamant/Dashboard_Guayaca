@@ -488,13 +488,13 @@ async function refreshAll() {
   btn.classList.add("loading");
   btn.querySelector("span") && (btn.querySelector("span").textContent = "Actualizando...");
 
-  showBanner("info", "⏳ Actualizando columnas AÑO / MES / DÍA en Google Sheets…");
+  showBanner("info", "⏳ Actualizando data transaccional…");
 
   try {
     // 1. Actualizar columnas en el sheet
     const resUpdate = await apiFetch("updateSheet");
     if (resUpdate.success) {
-      showBanner("info", "✅ Columnas actualizadas. Cargando métricas…");
+      showBanner("info", "✅ Data exitosa. Cargando métricas…");
     }
 
     // 2. Cargar datos del dashboard
